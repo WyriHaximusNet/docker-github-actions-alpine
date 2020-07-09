@@ -65,8 +65,15 @@ jobs:
           path: ./docker-image
       - run: docker load --input ./docker-image/docker_image.tar
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/master'
-      - run: docker push "${DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION}"
+      - name: Login to Docker Hub
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/master'
         env:
           DOCKER_USER: ${{ secrets.HUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.HUB_PASSCODE }}
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | \
+          docker login \
+            --username "${{ secrets.DOCKER_USER }}" \
+            --password-stdin
+      - run: docker push "${DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION}"
+        if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/master'
