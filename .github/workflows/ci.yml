@@ -71,9 +71,9 @@ jobs:
           DOCKER_USER: ${{ secrets.HUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.HUB_PASSCODE }}
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | \
+          echo "${{ secrets.HUB_PASSCODE }}" | \
           docker login \
-            --username "${{ secrets.DOCKER_USER }}" \
+            --username "${{ secrets.HUB_USERNAME }}" \
             --password-stdin
       - run: docker push "${DOCKER_IMAGE}:${DOCKER_IMAGE_VERSION}"
         if: (github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/master'
